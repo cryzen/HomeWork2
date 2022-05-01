@@ -1,21 +1,29 @@
 package Solution3
 
 interface FileSystemNode {
-    fun getParentElement() {
-        this::class
+    abstract fun getParentElement(): String
+
+    abstract fun getNameElement(): String
+
+    abstract fun getPath(): String
+}
+
+abstract class AbstractFileSystemNode : FileSystemNode {
+    override fun getParentElement(): String {
+        return this::class.java.simpleName as String
     }
 
-    fun getNameElement(): String
+     abstract override fun getNameElement(): String
 
-    fun getPath(): String {
+    override fun getPath(): String {
         return "${getParentElement()}/${getNameElement()}"
     }
 }
 
-open class Folder(private val folderName: String) : FileSystemNode{
+open class Folder(private val folderName: String) : AbstractFileSystemNode() {
     private val folderList = mutableListOf<Folder>()
 
-    val getFolderName: String get() = folderName
+    private val getFolderName: String get() = folderName
 
     constructor(folderName: String, vararg folders: Folder) : this(folderName) {
         folderList.addAll(folders)
@@ -35,16 +43,17 @@ open class Folder(private val folderName: String) : FileSystemNode{
 
 }
 
-class File(folder: Folder, private val fileName: String) : Folder(folder.getFolderName) {
+class File(folder: Folder, private val fileName: String) : AbstractFileSystemNode() {
 
     private val getFileName: String get() = fileName
+    private val folderName: String = folder.getNameElement()
 
     override fun getNameElement(): String {
-        return "$getFolderName/$getFileName"
+        return "$folderName/$getFileName"
     }
 
     override fun toString(): String {
-        return "File: $fileName is in $getFolderName"
+        return "File: $fileName is in $folderName"
     }
 
     fun getFileExtension(): String {
