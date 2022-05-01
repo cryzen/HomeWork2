@@ -92,5 +92,4 @@ public class Card {
         return prototypeDeck.get(cardIndex);
     }
 
-
 }
